@@ -5,9 +5,10 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  NativeModules,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -24,6 +25,8 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+const {ScannerModule} = NativeModules;
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -61,6 +64,12 @@ function App(): React.JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  useEffect(() => {
+    // ScannerModule.test(console.log);
+    // console.log(ScannerModule);
+    ScannerModule.test().then(console.log);
+  }, []);
 
   return (
     <SafeAreaView style={backgroundStyle}>
