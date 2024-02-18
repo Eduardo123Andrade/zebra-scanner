@@ -12,7 +12,7 @@ export const useScanner = (
   const _id = useId()
 
   const onScanner = (data: string) => {
-    onCallbackScanner && onCallbackScanner(data)
+    onCallbackScanner(data)
   }
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {Navigator} from './navigators'
+import {Navigator} from './src'
 
 function App(): React.JSX.Element {
   return <Navigator />
