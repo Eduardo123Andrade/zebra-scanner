@@ -2,6 +2,7 @@ package com.scanner
 
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -12,23 +13,42 @@ class ScannerModule(reactContext: ReactApplicationContext?) : ReactContextBaseJa
     LifecycleEventListener{
     private val _reactContext: ReactApplicationContext? = reactContext
     private var myBroadcastReceiver = ScannerReceiveBroadcast(reactContext)
+    private val _filter: IntentFilter =  IntentFilter()
+    private var _id: String? = null
+
+    init {
+        _filter.addCategory(Intent.CATEGORY_DEFAULT)
+        _filter.addAction("com.dwbasicintent1.ACTION")
+        _reactContext?.registerReceiver(myBroadcastReceiver, _filter)
+        _reactContext?.addLifecycleEventListener(this)
+    }
+
     override fun getName(): String {
         return "ScannerModule"
     }
 
-    @ReactMethod()
-    fun onInit(id: String) {
-        myBroadcastReceiver.id = id
-        val filter = IntentFilter()
-        filter.addCategory(Intent.CATEGORY_DEFAULT)
-        filter.addAction("com.dwbasicintent1.ACTION")
-        _reactContext?.registerReceiver(myBroadcastReceiver, filter)
+    private fun onRegisterReceiver() {
+        myBroadcastReceiver.id = _id
+        _reactContext?.registerReceiver(myBroadcastReceiver, _filter)
     }
 
-    override fun onHostResume() {}
+    @ReactMethod()
+    fun onInit(id: String) {
+        _id = id
+        onRegisterReceiver()
+    }
 
-    override fun onHostPause() {}
+    override fun onHostResume() {
+        onRegisterReceiver()
+        Log.d("REMUSE123", "Olar")
+    }
+
+    override fun onHostPause() {
+        _reactContext?.unregisterReceiver(myBroadcastReceiver)
+        Log.d("PAUSE", "Bye")
+    }
 
     override fun onHostDestroy() {
+        _reactContext?.unregisterReceiver(myBroadcastReceiver)
     }
 }
