@@ -4,20 +4,31 @@ import {DeviceEventEmitter, NativeModules} from 'react-native'
 const {ScannerModule} = NativeModules
 
 type OnCallBackScanner = (data: string) => void
+interface UseScannerConfig {
+  id?: string
+  canScan?: boolean
+}
+
+const DEFAULT_CONFIG: UseScannerConfig = {
+  canScan: true,
+}
 
 export const useScanner = (
   onCallbackScanner: OnCallBackScanner,
-  id?: string,
+  config?: UseScannerConfig,
 ) => {
   const _id = useId()
+  const _config = {...DEFAULT_CONFIG, ...config}
 
   const onScanner = (data: string) => {
     onCallbackScanner(data)
   }
 
   useEffect(() => {
-    const eventId = id ?? _id
+    if (!_config.canScan) return
+
+    const eventId = _config.id ?? _id
     ScannerModule.onInit(eventId)
     DeviceEventEmitter.addListener(`onScanner-${eventId}`, onScanner)
-  }, [_id])
+  }, [_id, _config])
 }
