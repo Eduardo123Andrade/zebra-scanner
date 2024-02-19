@@ -18,9 +18,10 @@ class ScannerModule(reactContext: ReactApplicationContext?) : ReactContextBaseJa
 
     init {
         _filter.addCategory(Intent.CATEGORY_DEFAULT)
-        _filter.addAction("com.dwbasicintent1.ACTION")
+        _filter.addAction("br.com.ferreiracosta.SCANNER")
         _reactContext?.registerReceiver(myBroadcastReceiver, _filter)
         _reactContext?.addLifecycleEventListener(this)
+        Log.d("ACTION", _filter.getAction(0).toString())
     }
 
     override fun getName(): String {

@@ -15,7 +15,7 @@ class ScannerReceiveBroadcast(reactContext: ReactApplicationContext?) : Broadcas
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent?.action
 
-        if (action == "com.dwbasicintent1.ACTION") {
+        if (action == "br.com.ferreiracosta.SCANNER") {
             try {
                 displayScanResult(intent, "via Broadcast")
             } catch (e: Exception) {
