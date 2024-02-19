@@ -1,13 +1,29 @@
 import React, {useEffect, useState} from 'react'
 import {StyleSheet, Text, View} from 'react-native'
 import {useScanner} from '../hooks'
-import {useIsFocused} from '@react-navigation/native'
+import {useIsFocused, useNavigation} from '@react-navigation/native'
 
 export const ScannedText = () => {
   const [message, setMessage] = useState<string>()
-  useScanner(data => {
-    setMessage(data)
-  }, 'ScannerText')
+  useScanner(setMessage, {id: 'ScannerText'})
+
+  const navigation = useNavigation()
+
+  useEffect(
+    () =>
+      navigation.addListener('blur', () => {
+        console.log('bye')
+      }),
+    [navigation],
+  )
+
+  useEffect(
+    () =>
+      navigation.addListener('focus', () => {
+        console.log('Olar')
+      }),
+    [navigation],
+  )
 
   const text = message ?? 'no scan'
   return (
