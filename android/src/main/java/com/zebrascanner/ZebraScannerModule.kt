@@ -76,6 +76,7 @@ class ZebraScannerModule(reactContext: ReactApplicationContext) :
   }
 
   override fun onHostDestroy() {
-    _reactContext?.unregisterReceiver(myBroadcastReceiver)
+    // Log.d("ON_DESTROY", myBroadcastReceiver.toString())
+    // _reactContext?.unregisterReceiver(myBroadcastReceiver)
   }
 }
