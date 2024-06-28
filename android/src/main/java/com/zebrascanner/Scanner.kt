@@ -1,15 +1,13 @@
 package com.zebrascanner
 
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import com.facebook.react.bridge.ReactApplicationContext
 
-
 class Scanner(
-  val profileName: String,
-  val intentAction: String,
-  val reactContext: ReactApplicationContext
+    val profileName: String,
+    val intentAction: String,
+    val reactContext: ReactApplicationContext
 ) {
   val profileEnabled = true
   val configMode = "CREATE_IF_NOT_EXIST"
@@ -20,7 +18,6 @@ class Scanner(
   val intentOutputEnable = true
   val keyStrokeEnable = false
   var bundleProfile = Bundle()
-  val bundlePluginConfig = ArrayList<Bundle>()
 
   init {
     bundleProfile = _createProfile()
@@ -30,18 +27,14 @@ class Scanner(
     setIntentConfig()
     setKeyStrokeConfig()
     setAppList()
-
-    bundleProfile.putParcelableArrayList("PLUGIN_CONFIG", bundlePluginConfig);
-    sendBroadCastIntent()
   }
 
-  private fun sendBroadCastIntent() {
+  private fun sendBroadCastIntent(bundleParam: Bundle) {
     val intent = Intent()
     intent.setAction("com.symbol.datawedge.api.ACTION")
 
+    bundleProfile.putBundle("PLUGIN_CONFIG", bundleParam)
     intent.putExtra("com.symbol.datawedge.api.SET_CONFIG", bundleProfile)
-    intent.putExtra("SEND_RESULT", "COMPLETE_RESULT");
-    intent.putExtra("COMMAND_IDENTIFIER", "PROFILE_CREATED");
 
     reactContext.sendBroadcast(intent)
   }
@@ -62,18 +55,22 @@ class Scanner(
     bundleApp.putString("PACKAGE_NAME", packageName)
     bundleApp.putStringArray("ACTIVITY_LIST", arrayOf("*"))
 
-    bundleProfile.putParcelableArray("APP_LIST", arrayOf(bundleApp))
+    bundleProfile.putParcelableArray("APP_LIST", arrayOf<Bundle>(bundleApp))
+
+    val i = Intent()
+    i.setAction("com.symbol.datawedge.api.ACTION")
+    i.putExtra("com.symbol.datawedge.api.SET_CONFIG", bundleProfile)
+
+    reactContext.sendBroadcast(i)
   }
 
   private fun setKeyStrokeConfig() {
     val bundleParams = Bundle()
 
     bundleParams.putString("keystroke_output_enabled", keyStrokeEnable.toString())
-    val bundle = createBundleConfig(pluginNameKeystroke, bundleParams)
-
-    bundlePluginConfig.add(bundle);
+    val bundleConfig = createBundleConfig(pluginNameKeystroke, bundleParams)
+    sendBroadCastIntent(bundleConfig)
   }
-
   private fun setIntentConfig() {
     val bundleParams = Bundle()
 
@@ -81,9 +78,8 @@ class Scanner(
     bundleParams.putString("intent_action", intentAction)
     bundleParams.putInt("intent_delivery", intentDelivery)
 
-    val bundle = createBundleConfig(pluginNameIntent, bundleParams)
-
-    bundlePluginConfig.add(bundle)
+    val bundleConfig = createBundleConfig(pluginNameIntent, bundleParams)
+    sendBroadCastIntent(bundleConfig)
   }
 
   private fun createBundleConfig(pluginName: String, bundleParam: Bundle): Bundle {
