@@ -17,7 +17,6 @@ class Scanner(
   private val resetConfig = false
   private val intentDelivery = 2
   private val intentOutputEnable = true
-  //  private val keyStrokeEnable = false
   private var bundleProfile = Bundle()
   private val bundlePluginConfig = ArrayList<Bundle>()
 
