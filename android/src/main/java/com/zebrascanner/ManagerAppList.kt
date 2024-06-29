@@ -1,9 +1,7 @@
 package com.zebrascanner
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 
 class ManagerAppList {
   private var rightProfile: ZebraProfile? = null
