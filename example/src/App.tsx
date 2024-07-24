@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { StyleSheet, View, Text, Button, TextInput } from 'react-native';
 import {
   multiply,
   createProfile,
   useScanner,
 } from 'react-native-zebra-scanner';
-import { ModalScanner } from './components';
+import { ModalScanner, Scanner } from './components';
 
 createProfile('Zebra Scanner', 'br.com.example.zebra.SCANNER');
 
@@ -17,8 +17,11 @@ export default function App() {
   const [showModal3, setShowModal3] = React.useState(false);
 
   const [_scanner, setBarcode] = React.useState<string>();
+  const [_scanner2, setBarcode2] = React.useState<string>();
 
   const { scanner, setConfig } = useScanner();
+
+  const ref = React.useRef<Button>(null);
 
   React.useEffect(() => {
     multiply(3, 7).then(setResult);
@@ -36,9 +39,20 @@ export default function App() {
     setConfig({ canScan, canReset: false });
   }, [showModal1, showModal1, showModal1]);
 
+  React.useEffect(() => {
+    console.log({ _scanner });
+  }, [_scanner]);
+
+  React.useEffect(() => {
+    if (ref.current) {
+      console.log(ref.current.state);
+    }
+  }, [ref.current]);
+
   return (
     <View style={styles.container}>
       <Text>Result: {scanner}</Text>
+      <Text>_Result: {_scanner}</Text>
 
       <View
         style={{
@@ -46,11 +60,27 @@ export default function App() {
           gap: 20,
         }}
       >
-        <Button title="Modal 1" onPress={() => setShowModal1(true)} />
+        <Scanner onChangeScanner={setBarcode} />
 
-        <Button title="Modal 2" onPress={() => setShowModal2(true)} />
+        <TextInput
+          // multiline
+          // autoFocus
+          selectTextOnFocus
+          // showSoftInputOnFocus={false}
+          style={{
+            borderWidth: 1,
+            width: 300,
+            height: 100,
+          }}
+          placeholder="aaaaaaaaa"
+          value={_scanner2}
+          onChangeText={setBarcode2}
+        />
+        <Button ref={ref} title="Modal 1" onPress={() => setShowModal1(true)} />
 
-        <Button title="Modal 3" onPress={() => setShowModal3(true)} />
+        {/*<Button title="Modal 2" onPress={() => setShowModal2(true)} />
+
+        <Button title="Modal 3" onPress={() => setShowModal3(true)} /> */}
       </View>
 
       <ModalScanner
